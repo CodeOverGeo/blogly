@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'users/base.html' %}
 {% block title %} 
 User Listing
 {% endblock %}
@@ -7,11 +7,13 @@ User Listing
 <h2>Users</h2>
 <ul>
 {% for user in users %}
-<li>{{user}}</li>
+<li>
+    <a href = "/users/{{ user.id }}">{{ user.full_name }}</a>
+</li>
 {% endfor %}
 </ul>
 <br>
-<form action="/new_user">
+<form action="/users/new">
     <input type="submit" value="Add User" />
 </form>
 {% endblock %}
