@@ -27,6 +27,7 @@ def get():
 
 @app.route('/users')
 def users():
+    """Shows all users currently in database"""
     users = User.query.order_by(User.last_name, User.first_name).all()
     return render_template ('users/users.html', users=users)
 
@@ -61,6 +62,7 @@ def user_show(user_id):
 
 @app.route('/users/<int:user_id>')
 def user_detail(user_id):
+    """Shows detail about specific user"""
 
     user = User.query.get_or_404(user_id)
     return render_template ('users/detail.html', user = user)
