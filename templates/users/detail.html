@@ -1,15 +1,28 @@
-{% extends 'users/base.html' %}
-{% block title %} 
-{{user.full_name}}
-{% endblock %}
-
-{% block content %}
-<img src="{{ user.image_url }}" alt="Profile Picture" style="width:128px;height:128px;">
-<p>{{ user.full_name }}</p>
-<form action="/users/{{ user.id }}/edit">
+{% extends 'users/base.html' %} {% block title %} {{user.full_name}} {% endblock
+%} {% block content %}
+<div>
+  <img
+    src="{{ user.image_url }}"
+    alt="Profile Picture"
+    style="width: 128px; height: 128px"
+  />
+</div>
+<section>
+  <h2>{{ user.full_name }}</h2>
+  <form action="/users/{{ user.id }}/edit">
     <input type="submit" value="Edit" />
-</form>
-<form action="/user/{{ user.id }}/delete" method="POST">
+  </form>
+  <form action="/user/{{ user.id }}/delete" method="POST">
     <input type="submit" value="Delete" />
-</form>
+  </form>
+</section>
+<section>
+  <h2>Posts</h2>
+  <ul>
+    {% for post in posts %}
+    <li><a href="/posts/{{ post.id }}">{{post.title}}</a></li>
+    {% endfor %}
+  </ul>
+  <button><a href="/users/{{ user.id }}/posts/add">Add Post</a></button>
+</section>
 {% endblock %}

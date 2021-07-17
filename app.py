@@ -2,7 +2,7 @@
 
 from flask import Flask, request, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__, static_url_path='/static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -16,26 +16,33 @@ toolbar = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+
 @app.route('/')
 def root():
     """Root route redirects to user list"""
-    return redirect ('/users')
+    return redirect('/users')
+
 
 @app.route('/get')
 def get():
     pass
 
+
+# User Routes
+
 @app.route('/users')
 def users():
     """Shows all users currently in database"""
     users = User.query.order_by(User.last_name, User.first_name).all()
-    return render_template ('users/users.html', users=users)
+    return render_template('users/users.html', users=users)
 
-@app.route('/users/new')
+
+@app.route('/users/new', methods=['GET'])
 def new_user_page():
     """Show a form to create a new user"""
 
     return render_template('users/new.html')
+
 
 @app.route('/users/new', methods=['POST'])
 def create_user():
@@ -52,29 +59,26 @@ def create_user():
 
     return redirect("/users")
 
-@app.route('/user/<int:user_id>')
-def user_show(user_id):
-    """Show detail page for specific user"""
-
-    user = User.query.get_or_404(user_id)
-    return render_template('users/detail.html', user = user)
-
 
 @app.route('/users/<int:user_id>')
 def user_detail(user_id):
     """Shows detail about specific user"""
 
     user = User.query.get_or_404(user_id)
-    return render_template ('users/detail.html', user = user)
+    posts = Post.query.filter_by(user_id=user_id)
+    print(posts)
+    return render_template('users/detail.html', user=user, posts=posts)
 
-@app.route('/users/<int:user_id>/edit')
+
+@ app.route('/users/<int:user_id>/edit')
 def edit_user(user_id):
     """Show a form to edit a specific user"""
 
     user = User.query.get_or_404(user_id)
-    return render_template('users/edit.html', user = user)
+    return render_template('users/edit.html', user=user)
 
-@app.route('/users/<int:user_id>/edit', methods = ['POST'])
+
+@ app.route('/users/<int:user_id>/edit', methods=['POST'])
 def update_user(user_id):
     """Get edit user form values and update database"""
 
@@ -88,7 +92,8 @@ def update_user(user_id):
 
     return redirect('/users')
 
-@app.route('/user/<int:user_id>/delete', methods=['POST'])
+
+@ app.route('/user/<int:user_id>/delete', methods=['POST'])
 def user_delete(user_id):
     """Deletes user based off of delete request"""
 
@@ -98,7 +103,19 @@ def user_delete(user_id):
 
     return redirect('/users')
 
+# Posts Routes
 
 
+@app.route('/users/<int:user_id>/posts/add')
+def add_new_post(user_id):
+    """Show a form to add a new post for a user"""
+    user = User.query.get_or_404(user_id)
+    return render_template('posts/add.html', user=user)
 
-    
+
+@app.route('/posts/<int:post_id>')
+def post_show(post_id):
+    """Show a specific post by a user"""
+
+    post = Post.query.get_or_404(post_id)
+    return render_template('posts/show.html', post=post)
