@@ -23,16 +23,12 @@ def root():
     return redirect('/users')
 
 
-@app.route('/get')
-def get():
-    pass
-
-
 # User Routes
 
 @app.route('/users')
 def users():
     """Shows all users currently in database"""
+
     users = User.query.order_by(User.last_name, User.first_name).all()
     return render_template('users/users.html', users=users)
 
@@ -107,7 +103,7 @@ def user_delete(user_id):
 
 
 @app.route('/users/<int:user_id>/posts/add')
-def add_new_post(user_id):
+def add_new_post_form(user_id):
     """Show a form to add a new post for a user"""
     user = User.query.get_or_404(user_id)
     return render_template('posts/add.html', user=user)
@@ -119,3 +115,52 @@ def post_show(post_id):
 
     post = Post.query.get_or_404(post_id)
     return render_template('posts/show.html', post=post)
+
+
+@app.route('/users/<int:user_id>/posts/add', methods=['POST'])
+def add_new_post(user_id):
+    """Process form submission for new posts by a user"""
+
+    user = User.query.get_or_404(user_id)
+    new_post = Post(title=request.form['title'],
+                    content=request.form['content'],
+                    users=user)
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}')
+
+
+@app.route('/posts/<int:post_id>/edit')
+def posts_edit_form(post_id):
+    """Show a form to edit an existing post"""
+
+    post = Post.query.get_or_404(post_id)
+    return render_template('posts/edit.html', post=post)
+
+
+@app.route('/posts/<int:post_id>/edit', methods=['POST'])
+def edit_post(post_id):
+    """Process form submission for editing existing post by a user"""
+
+    post = Post.query.get_or_404(post_id)
+    post.title = request.form['title']
+    post.content = request.form['content']
+
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f'/users/{post.user_id}')
+
+
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    """Delete current post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f'/users/{post.user_id}')

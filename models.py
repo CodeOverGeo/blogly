@@ -28,6 +28,9 @@ class User(db.Model):
 
     image_url = db.Column(db.String, nullable=False, default=DEFAULT_IMAGE_URL)
 
+    posts = db.relationship("Post", backref="user",
+                            passive_deletes=True)
+
     @property
     def full_name(self):
         """Return full name of user."""
@@ -48,9 +51,11 @@ class Post(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        "users.id", ondelete='CASCADE'), nullable=False)
 
-    users = db.relationship('User', backref='posts')
+    # users = db.relationship('User', backref='posts',
+    #                         cascade='all, delete-orphan')
 
     @property
     def readable_date(self):
