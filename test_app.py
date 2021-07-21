@@ -16,9 +16,19 @@ class BloglyTest (TestCase):
 
     def setUp(self):
         User.query.delete()
+        Post.query.delete()
         user = User(first_name='John', last_name='Doe', image_url='None')
 
         db.session.add(user)
+        db.session.commit()
+
+        p1 = Post(title='First Post',
+                  content='Starting comment', user_id='1')
+
+        p2 = Post(title='Second Post', content='Next', user_id='2')
+
+        db.session.add(p1)
+        db.session.add(p2)
         db.session.commit()
 
         self.user_id = user.id
