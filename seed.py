@@ -1,4 +1,4 @@
-from models import User, Post, db
+from models import User, Post, db, Tag, PostTag
 
 db.drop_all()
 db.create_all()

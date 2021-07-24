@@ -5,11 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def connect_db(app):
-    db.app = app
-    db.init_app(app)
-
-
 DEFAULT_IMAGE_URL = "/static/generic_profile.png"
 
 
@@ -49,16 +44,48 @@ class Post(db.Model):
 
     content = db.Column(db.String(100), nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=False,
+                           default=datetime.datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id"), nullable=False)
-
-    # users = db.relationship('User', backref='posts',
-    #                         cascade='all, delete-orphan')
+        "users.id", ondelete="CASCADE"), nullable=False)
 
     @property
     def readable_date(self):
         """Returns a user readable date"""
 
         return self.created_at.strftime("%a %b %d %Y, %I:%M %p")
+
+
+class PostTag(db.Model):
+    """post tags"""
+
+    __tablename__ = 'posts_tags'
+
+    post_id = db.Column(db.Integer, db.ForeignKey(
+        'posts.id', ondelete='CASCADE'), primary_key=True)
+
+    tag_id = db.Column(db.Integer, db.ForeignKey(
+        'tags.id', ondelete='CASCADE'), primary_key=True)
+
+
+class Tag(db.Model):
+    """Tags"""
+
+    __tablename__ = 'tags'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(15), unique=True, nullable=False)
+
+    posts = db.relationship(
+        'Post',
+        secondary="posts_tags",
+        cascade="all,delete-orphan",
+        backref="tags",
+    )
+
+
+def connect_db(app):
+    db.app = app
+    db.init_app(app)
