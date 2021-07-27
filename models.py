@@ -48,7 +48,7 @@ class Post(db.Model):
                            default=datetime.datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id", ondelete="CASCADE"), nullable=False)
+        "users.id"), nullable=False)
 
     @property
     def readable_date(self):
@@ -63,10 +63,10 @@ class PostTag(db.Model):
     __tablename__ = 'posts_tags'
 
     post_id = db.Column(db.Integer, db.ForeignKey(
-        'posts.id', ondelete='CASCADE'), primary_key=True)
+        'posts.id'), primary_key=True)
 
     tag_id = db.Column(db.Integer, db.ForeignKey(
-        'tags.id', ondelete='CASCADE'), primary_key=True)
+        'tags.id'), primary_key=True)
 
 
 class Tag(db.Model):
@@ -81,7 +81,6 @@ class Tag(db.Model):
     posts = db.relationship(
         'Post',
         secondary="posts_tags",
-        cascade="all,delete-orphan",
         backref="tags",
     )
 

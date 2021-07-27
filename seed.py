@@ -1,3 +1,4 @@
+from app import db
 from models import User, Post, db, Tag, PostTag
 
 db.drop_all()
