@@ -8,33 +8,31 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
 app.config['SQLALCHEMY_ECHO'] = False
 
 db.drop_all()
-db.create_all()
-db.session.rollback()
 
 
 class BloglyTest (TestCase):
 
     def setUp(self):
-        User.query.delete()
-        Post.query.delete()
-        user = User(first_name='John', last_name='Doe', image_url='None')
-
-        db.session.add(user)
+        db.create_all()
+        user1 = User(first_name='John', last_name='Doe', image_url='None')
+        print(f'first call = {user1.id}')
+        print(f'second call = {user1.first_name}')
+        db.session.add(user1)
         db.session.commit()
-
+        print(f'third call = {user1.id}')
         p1 = Post(title='First Post',
                   content='Starting comment', user_id='1')
 
-        p2 = Post(title='Second Post', content='Next', user_id='2')
+        p2 = Post(title='Second Post', content='Next', user_id='1')
 
         db.session.add(p1)
         db.session.add(p2)
         db.session.commit()
-
-        self.user_id = user.id
+        print(f'last call = {user1.id}')
+        self.user_id = user1.id
 
     def tearDown(self):
-        db.session.rollback()
+        db.drop_all()
 
     def test_users(self):
         with app.test_client() as client:

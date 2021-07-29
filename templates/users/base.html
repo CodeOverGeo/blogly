@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %} Document {% endblock %}</title>
-</head>
-<body>
-    {% block content %}
-    {% endblock %}
-</body>
+  </head>
+  <body>
+    {% block content %} {% endblock %}
+    <footer>
+      <a href="/users"><button type="button">Users</button></a>
+      <a href="/posts"><button type="button">Posts</button></a>
+      <a href="/tags"><button type="button">Tags</button></a>
+    </footer>
+  </body>
 </html>

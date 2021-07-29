@@ -16,6 +16,10 @@ p2 = Post(title='What''s going on?',
 p4 = Post(title='What''s going on, now?',
           content='Can''t wait to interact with everyone on here again', user_id='2')
 
+tag1 = Tag(name='Fun')
+tag2 = Tag(name='Even More')
+tag3 = Tag(name='Bloop')
+
 db.session.add(user1)
 db.session.add(user2)
 
@@ -26,4 +30,9 @@ db.session.add(p2)
 db.session.add(p3)
 db.session.add(p4)
 
+db.session.commit()
+
+db.session.add(tag1)
+db.session.add(tag2)
+db.session.add(tag3)
 db.session.commit()
