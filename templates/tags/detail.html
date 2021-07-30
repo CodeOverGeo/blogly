@@ -10,4 +10,11 @@
 </ul>
 {% else %}
 <p>No posts associated with tag</p>
+<a href="/tags"> <button type="button">Go Back</button></a>
+<a href="/tag/{{ tag.id }}/edit"> <button type="button">Edit Tag</button></a>
+<form>
+  <button formmethod="POST" formaction="/tag/{{ tag.id }}/delete">
+    Delete
+  </button>
+</form>
 {% endif %} {% endblock %}

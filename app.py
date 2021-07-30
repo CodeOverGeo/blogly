@@ -192,7 +192,7 @@ def create_tag_form():
 
 
 @app.route('/tags/new', methods=['POST'])
-def post_create_tag():
+def create_new_tag():
     """Process add form, add tag to database, redirect to tag list"""
 
     new_tag = Tag(name=request.form['name'])
@@ -201,3 +201,33 @@ def post_create_tag():
     db.session.commit()
 
     return redirect("/tags")
+
+
+@app.route('/tag/<int:tag_id>/edit')
+def edit_tag_form(tag_id):
+
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template('tags/edit.html', tag=tag)
+
+
+@app.route('/tag/<int:tag_id>/edit', methods=['POST'])
+def edit_tag(tag_id):
+
+    tag = Tag.query.get_or_404(tag_id)
+    tag.name = request.form['name']
+
+    db.session.add(tag)
+    db.session.commit()
+
+    return redirect('/tags')
+
+
+@app.route('/tag/<int:tag_id>/delete', methods=['POST'])
+def delete_tag(tag_id):
+
+    tag = Tag.query.get_or_404(tag_id)
+
+    db.session.delete(tag)
+    db.session.commit()
+
+    return redirect('/tags')
