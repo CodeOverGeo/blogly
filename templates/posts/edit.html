@@ -8,11 +8,43 @@ block content %}
     <label for="title">Title</label>
     <label for="Title">Title</label>
     <br />
-    <input type="text" name="title" />
+    <input
+      type="text"
+      name="title"
+      placeholder="{{ post.title }}"
+      value="{{ post.title }}"
+      required
+    />
     <br />
     <label for="content">Content</label>
     <br />
-    <textarea name="content" cols="30" rows="4"></textarea>
+    <textarea
+      name="content"
+      cols="30"
+      rows="4"
+      placeholder="{{ post.content }}"
+      required
+    >
+{{ post.content }}</textarea
+    >
+    <br />
+    {% for tag in tags %}
+    <input
+      type="checkbox"
+      name="tags"
+      id="tag_{{ tag.id }}"
+      {%
+      if
+      tag
+      in
+      post.tags
+      %}checked{%
+      endif
+      %}
+      value="{{ tag.id }}"
+    />
+    <label for="tag_{{ tag.id }}">{{ tag.name }}</label>
+    {% endfor %}
     <br />
     <a href="/users"><button type="button">Cancel</button></a>
     <button type="submit">Edit</button>

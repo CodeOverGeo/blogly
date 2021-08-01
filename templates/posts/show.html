@@ -10,7 +10,16 @@
     <br />
     {{ post.readable_date}}
   </p>
+  {% if post.tags %}
+  <p>
+    <h3>Tags:</h3>
+    {% for tag in post.tags %}
+    <a href="/tag/{{ tag.id }}"><span class="badge bg-primary">{{ tag.name }}</span></a>
+    {% endfor %}
+  </p>
+  {% endif %}
 </section>
+
 <section>
   <form>
     <button formmethod="GET" formaction="/users/{{ post.user_id }}">

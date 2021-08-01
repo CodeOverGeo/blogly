@@ -6,11 +6,21 @@ block content %}
   <section>
     <label for="Title">Title</label>
     <br />
-    <input type="text" name="title" />
+    <input type="text" name="title" required />
     <br />
     <label for="content">Content</label>
     <br />
-    <textarea name="content" cols="30" rows="4"></textarea>
+    <textarea name="content" cols="30" rows="4" required></textarea>
+    <br />
+    {% for tag in tags %}
+    <input
+      type="checkbox"
+      name="tags"
+      id="tag_{{ tag.id }}"
+      value="{{ tag.id }}"
+    />
+    <label for="tag_{{ tag.id }}">{{ tag.name }}</label>
+    {% endfor %}
     <br />
     <a href="/users/{{user.id}}"><button type="button">Cancel</button></a>
     <button type="submit">Add</button>

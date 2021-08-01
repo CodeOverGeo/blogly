@@ -66,7 +66,7 @@ def user_detail(user_id):
     return render_template('users/detail.html', user=user, posts=posts)
 
 
-@ app.route('/users/<int:user_id>/edit')
+@app.route('/users/<int:user_id>/edit')
 def edit_user(user_id):
     """Show a form to edit a specific user"""
 
@@ -74,7 +74,7 @@ def edit_user(user_id):
     return render_template('users/edit.html', user=user)
 
 
-@ app.route('/users/<int:user_id>/edit', methods=['POST'])
+@app.route('/users/<int:user_id>/edit', methods=['POST'])
 def update_user(user_id):
     """Get edit user form values and update database"""
 
@@ -89,7 +89,7 @@ def update_user(user_id):
     return redirect('/users')
 
 
-@ app.route('/user/<int:user_id>/delete', methods=['POST'])
+@app.route('/user/<int:user_id>/delete', methods=['POST'])
 def user_delete(user_id):
     """Deletes user based off of delete request"""
 
@@ -102,11 +102,22 @@ def user_delete(user_id):
 # Posts Routes
 
 
+@app.route('/posts')
+def posts():
+    """ Show 5 most recent posts"""
+
+    posts = Post.query.order_by(Post.created_at.desc()).limit(5).all()
+    return render_template('posts/all.html', posts=posts)
+
+
 @app.route('/users/<int:user_id>/posts/add')
 def add_new_post_form(user_id):
     """Show a form to add a new post for a user"""
+
     user = User.query.get_or_404(user_id)
-    return render_template('posts/add.html', user=user)
+    tags = Tag.query.all()
+
+    return render_template('posts/add.html', user=user, tags=tags)
 
 
 @app.route('/posts/<int:post_id>')
@@ -122,9 +133,12 @@ def add_new_post(user_id):
     """Process form submission for new posts by a user"""
 
     user = User.query.get_or_404(user_id)
+    tags_ids = [int(num) for num in request.form.getlist('tags')]
+    tags = Tag.query.filter(Tag.id.in_(tags_ids)).all()
     new_post = Post(title=request.form['title'],
                     content=request.form['content'],
-                    users=user)
+                    user=user,
+                    tags=tags)
 
     db.session.add(new_post)
     db.session.commit()
@@ -137,7 +151,9 @@ def posts_edit_form(post_id):
     """Show a form to edit an existing post"""
 
     post = Post.query.get_or_404(post_id)
-    return render_template('posts/edit.html', post=post)
+    tags = Tag.query.all()
+
+    return render_template('posts/edit.html', post=post, tags=tags)
 
 
 @app.route('/posts/<int:post_id>/edit', methods=['POST'])
@@ -147,6 +163,9 @@ def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
     post.title = request.form['title']
     post.content = request.form['content']
+
+    tag_ids = [int(num) for num in request.form.getlist('tags')]
+    post.tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
 
     db.session.add(post)
     db.session.commit()
